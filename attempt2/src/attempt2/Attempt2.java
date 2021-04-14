@@ -143,6 +143,8 @@ public class Attempt2 {
     
 public static void listTeams(Connection c)
 {
+    //NOT FINISHED YET!
+    /*list the teams and the students who are in each team.  Order them by department, course number, section number, then team name.*/
     String sql = "SELECT TeamName FROM Team";
         try(
         PreparedStatement stmt = c.prepareStatement(sql);
