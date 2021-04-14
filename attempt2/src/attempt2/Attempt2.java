@@ -32,6 +32,21 @@ public class Attempt2 {
         else
             return input;
     }
+     /**
+     * displays menu
+     * @return result that will trigger a menu
+     */
+    public static int menu()
+    {
+        Scanner in= new Scanner(System.in);
+        int choice;
+        System.out.println("\n------Welcome to the second Term Project!------");
+        System.out.print("1)List Teams\n2)Peer Evaluation Averages\n3)Outlier Report\n");
+        System.out.print("4)Section Stats\n5)Team Roster\n6)Team Demographics");
+        choice=in.nextInt();
+
+        return choice;
+    }
     public static void main(String[] args) {
         // TODO code application logic here
         System.out.println("We did it BRODIES!");
