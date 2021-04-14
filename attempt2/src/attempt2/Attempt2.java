@@ -82,11 +82,12 @@ public class Attempt2 {
                 try{
                 switch(choice){
                         case 1://List Teams
-                            System.out.println("Listing Teams\n");
+                            System.out.println("Listing Teams...\n");
                             listTeams(conn);                           
                             break;
                         case 2://Peer Evaluation Averages
-                            
+                            System.out.println("Listing average scores...");
+                            averageScore(conn);
                             break;
                         case 3://Outlier Report
                             
@@ -140,10 +141,12 @@ public class Attempt2 {
         System.out.println("Goodbye!");
          
     }//ends main
-    
+/**
+ * list the teams and the students who are in each team.  Order them by department, course number, section number, then team name
+ * @param c 
+ */    
 public static void listTeams(Connection c)
 {
-    //NOT FINISHED YET!
     /*list the teams and the students who are in each team.  Order them by department, course number, section number, then team name.*/
     String sql = "SELECT teamName,firstName, lastName, departmentName, courseNumber, sectionNumber FROM Team t INNER JOIN Student s ON t.STUDENTID = s.STUDENTID ORDER BY departmentName, courseNumber, sectionNumber, teamName";
         try(
@@ -246,6 +249,35 @@ public static void listTeams(Connection c)
                 
             }
 	}
+    }
+    
+    /**
+     * For each student in each team, lists the average of the scores that that student received from their peers.  
+     * @param c 
+     */
+    public static void averageScore(Connection c)
+    {
+        String sql = "SELECT teamName,firstName, lastName, departmentName, courseNumber, sectionNumber FROM Team t INNER JOIN Student s ON t.STUDENTID = s.STUDENTID ORDER BY departmentName, courseNumber, sectionNumber, teamName";
+        try(
+        PreparedStatement stmt = c.prepareStatement(sql);
+        ResultSet rs = stmt.executeQuery();)//try with resources automatically cleans/closes out resources
+        {
+            String format ="%-50s%-30s%-30s%-30s%-15s%-15s\n";
+            System.out.printf(format,"Team Name", "First Name", "Last Name", "Department Name", "Course Number", "Section Number");
+            while (rs.next()) {
+                String tname = rs.getString("teamName");
+                String fname = rs.getString("firstName");
+                String lname = rs.getString("lastName");
+                String depName = rs.getString("departmentName");
+                int courseNum = rs.getInt("courseNumber");
+                int secNum = rs.getInt("sectionNumber");
+                
+                System.out.printf(format, tname, fname, lname, depName, courseNum, secNum);
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error getting teams");
+            ex.printStackTrace();
+        }
     }
     
 }//ends attempt2
