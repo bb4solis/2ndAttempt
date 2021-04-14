@@ -86,22 +86,27 @@ public class Attempt2 {
                             listTeams(conn);                           
                             break;
                         case 2://Peer Evaluation Averages
-                            
+                            System.out.println("Peer Evaluation Averages\n");
+				PeerEvaluationAverages(conn);
                             break;
                         case 3://Outlier Report
-                            
+                            System.out.println("Outlier Report\n");
+				OutlierReport(conn);
                             break;
                         case 4://Section Stats
-                            
+                            System.out.println("Section Stats\n");
+				SectionStats(conn)
                             break;
                         case 5://Team Roster
-                            
+                            System.out.println("Team Roster\n");
+				TeamRoster(conn)
                             break;
                         case 6://Team Demographics
-                           
+                            System.out.println("Team Demographics\n");
+				TeamDemographics(conn)
                             break;
                         case 7://End
-                           
+                            System.out.println("Exiting program\n");
                             break;                                                
 			default:
                             System.out.println("\nNot a valid Entery, Enter a valid number from the Menu options\n");
@@ -145,22 +150,90 @@ public static void listTeams(Connection c)
 {
     //NOT FINISHED YET!
     /*list the teams and the students who are in each team.  Order them by department, course number, section number, then team name.*/
-    String sql = "SELECT teamName,firstName, lastName, departmentName, courseNumber, sectionNumber FROM Team t INNER JOIN Student s ON t.STUDENTID = s.STUDENTID ORDER BY departmentName, courseNumber, sectionNumber, teamName";
+    String sql = "SELECT TeamName FROM Team";
         try(
         PreparedStatement stmt = c.prepareStatement(sql);
         ResultSet rs = stmt.executeQuery();)//try with resources automatically cleans/closes out resources
         {
-            String format ="%-50s%-30s%-30s%-30s%-15s%-15s\n";
-            System.out.printf(format,"Team Name", "First Name", "Last Name", "Department Name", "Course Number", "Section Number");
+            System.out.println("Teams");
             while (rs.next()) {
-                String tname = rs.getString("teamName");
-                String fname = rs.getString("firstName");
-                String lname = rs.getString("lastName");
-                String depName = rs.getString("departmentName");
-                int courseNum = rs.getInt("courseNumber");
-                int secNum = rs.getInt("sectionNumber");
-                
-                System.out.printf(format, tname, fname, lname, depName, courseNum, secNum);
+                System.out.println(rs.getString("TeamName"));
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error getting teams");
+            ex.printStackTrace();
+        }
+}
+	
+public static void PeerEvaluationAverages(Connection c)
+{
+    //NOT FINISHED YET!
+    /**/
+    String sql = "SELECT TeamName FROM Team";
+        try(
+        PreparedStatement stmt = c.prepareStatement(sql);
+        ResultSet rs = stmt.executeQuery();)//try with resources automatically cleans/closes out resources
+        {
+            System.out.println("Teams");
+            while (rs.next()) {
+                System.out.println(rs.getString("TeamName"));
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error getting teams");
+            ex.printStackTrace();
+        }
+}
+	
+public static void OutlierReport(Connection c)
+{
+    //NOT FINISHED YET!
+    /**/
+    String sql = "SELECT TeamName FROM Team";
+        try(
+        PreparedStatement stmt = c.prepareStatement(sql);
+        ResultSet rs = stmt.executeQuery();)//try with resources automatically cleans/closes out resources
+        {
+            System.out.println("Teams");
+            while (rs.next()) {
+                System.out.println(rs.getString("TeamName"));
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error getting teams");
+            ex.printStackTrace();
+        }
+}
+	
+public static void SectionStats(Connection c)
+{
+    //NOT FINISHED YET!
+    /**/
+    String sql = "SELECT TeamName FROM Team";
+        try(
+        PreparedStatement stmt = c.prepareStatement(sql);
+        ResultSet rs = stmt.executeQuery();)//try with resources automatically cleans/closes out resources
+        {
+            System.out.println("Teams");
+            while (rs.next()) {
+                System.out.println(rs.getString("TeamName"));
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error getting teams");
+            ex.printStackTrace();
+        }
+}
+	
+public static void TeamRoster(Connection c)
+{
+    //NOT FINISHED YET!
+    /**/
+    String sql = "SELECT TeamName FROM Team";
+        try(
+        PreparedStatement stmt = c.prepareStatement(sql);
+        ResultSet rs = stmt.executeQuery();)//try with resources automatically cleans/closes out resources
+        {
+            System.out.println("Teams");
+            while (rs.next()) {
+                System.out.println(rs.getString("TeamName"));
             }
         } catch (SQLException ex) {
             System.out.println("Error getting teams");
@@ -168,6 +241,25 @@ public static void listTeams(Connection c)
         }
 }
 
+public static void TeamDemographics(Connection c)
+{
+    //NOT FINISHED YET!
+    /**/
+    String sql = "SELECT TeamName FROM Team";
+        try(
+        PreparedStatement stmt = c.prepareStatement(sql);
+        ResultSet rs = stmt.executeQuery();)//try with resources automatically cleans/closes out resources
+        {
+            System.out.println("Teams");
+            while (rs.next()) {
+                System.out.println(rs.getString("TeamName"));
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error getting teams");
+            ex.printStackTrace();
+        }
+}
+	
 /**
  * Insures that a specific Section exists within the Database
  * @param conn
