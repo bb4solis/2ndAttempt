@@ -20,6 +20,8 @@ public class Attempt2 {
     static String PASS;
     static String DBNAME;
     
+    static final String JDBC_DRIVER = "org.apache.derby.jdbc.ClientDriver";
+    static String DB_URL = "jdbc:derby://localhost:1527/";
     /**
  * Takes the input string and outputs "N/A" if the string is empty or null.
  * @param input The string to be mapped.
@@ -48,20 +50,23 @@ public class Attempt2 {
 
         return choice;
     }
-    public static void dbSetUP(String user, String pwd,String DBname)
+    public static void dbSetUP(Scanner in)
     {   
-        Scanner in = new Scanner(System.in);
+        //Scanner in = new Scanner(System.in);
         System.out.print("Name of the database (not the user account): ");
-        DBname = in.nextLine();
+        DBNAME = in.nextLine();
         System.out.print("Database user name: "); 
-        user = in.nextLine();
+        USER = in.nextLine();
         System.out.print("Database password: ");
-        pwd = in.nextLine();
+        PASS = in.nextLine();
     }
     public static void main(String[] args) {
         // TODO code application logic here
         int choice;
         Scanner in= new Scanner(System.in);
+        dbSetUP(in);
+        
+        DB_URL = DB_URL + DBNAME + ";user="+ USER + ";password=" + PASS;
         Connection conn = null;// initialize the connection
         Statement stmt = null; // initialize the statement
         
@@ -72,65 +77,85 @@ public class Attempt2 {
             System.out.println("Connecting to database...");
             conn = DriverManager.getConnection(DB_URL);
             choice = menu();
+ 
             while(choice != 7){
                 try{
                 switch(choice){
-                        case 1:
+                        case 1://List Teams
+                            System.out.println("Listing Teams");
+                            listTeams(conn);                           
+                            break;
+                        case 2://Peer Evaluation Averages
                             
                             break;
-                        case 2:
+                        case 3://Outlier Report
                             
                             break;
-                        case 3:
+                        case 4://Section Stats
                             
                             break;
-                        case 4:
+                        case 5://Team Roster
                             
                             break;
-                        case 5:
-                            
-                            break;
-                        case 6:
+                        case 6://Team Demographics
                            
                             break;
-                        case 7:
+                        case 7://End
                            
-                            break;
-                                                
+                            break;                                                
 			default:
                             System.out.println("\nNot a valid Entery, Enter a valid number from the Menu options\n");
+                            break;
                     }choice=menu();
-                    conn.close();
-            }catch(InputMismatchException e){
+                
+                    
+                }catch(InputMismatchException e){
                     System.out.println("\nEnter a Number: \n");
                     in.nextLine();
-            }
-              catch (SQLException se) {
+                }
+                }conn.close();
+            } catch (SQLException se) {
             //Handle errors for JDBC
             se.printStackTrace();  
             } catch (Exception e) {
             //Handle errors for Class.forName
             e.printStackTrace();
-        } finally {
+            } finally {
             //finally block used to close resources
-            try {
-                if (stmt != null) {
-                    stmt.close();
+                try {
+                    if (stmt != null) {
+                        stmt.close();
+                    }
+                } catch (SQLException se2) {
+                }// nothing we can do
+                 try {
+                    if (conn != null) {
+                        conn.close();
+                    }
+                } catch (SQLException se) {
+                    se.printStackTrace();
                 }
-            } catch (SQLException se2) {
-            }// nothing we can do
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException se) {
-                se.printStackTrace();
+                 in.close();
             }//end finally try
-        }//end try
         System.out.println("Goodbye!");
          
-        
-}//ends while
-        }//ends try
     }//ends main
-            }//ends attempt2
+    
+public static void listTeams(Connection c)
+{
+    String sql = "SELECT TeamName FROM Team";
+        try(
+        PreparedStatement stmt = c.prepareStatement(sql);
+        ResultSet rs = stmt.executeQuery();)//try with resources automatically cleans/closes out resources
+        {
+            System.out.println("Teams");
+            while (rs.next()) {
+                System.out.println(rs.getString("TeamName"));
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error getting teams");
+            ex.printStackTrace();
+        }
+}
+    
+}//ends attempt2
