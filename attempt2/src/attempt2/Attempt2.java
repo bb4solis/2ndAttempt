@@ -159,5 +159,85 @@ public static void listTeams(Connection c)
             ex.printStackTrace();
         }
 }
+
+/**
+ * Insures that a specific Section exists within the Database
+ * @param conn
+ * @param section
+ * @param courseNumber
+ */
+ public static boolean sectionExists(Connection conn, String courseNumber,String section)
+ {
+     Statement stmt = null;
+     try{
+         stmt = conn.createStatement();
+         //Todo: actual sql needed to retrieve a section
+         String sqlGetSection = "";
+         ResultSet rs = stmt.executeQuery(sqlGetSection);
+         boolean answer = rs.next();
+         rs.close();
+         stmt.close();
+         return answer;
+     }catch (SQLException e) {
+            System.out.println("There was a problem accessing the database");
+            return false;
+	} finally {
+            //finally block used to close resources
+            try {
+		if (stmt != null) {
+                    stmt.close();
+		}
+            } catch (SQLException se2){
+                
+            }
+     }
+     
+ }
+ 
+  /**
+     * Insuring that an Integer is being entered
+     * @param str
+     * @return 
+     */
+    public static boolean isNumeric(String str) { 
+        try {  
+            Integer.parseInt(str);  
+            return true;
+	} catch(NumberFormatException e){  
+            return false;  
+	}
+    }
+    
+     /**
+     * Insuring that a specified course exists within the Database
+     * @param conn
+     * @param course
+     * @return 
+     */
+    public static boolean courseExists(Connection conn, String course){
+        Statement stmt = null;
+	try {
+            stmt = conn.createStatement();
+            //TODO: sequel to retrieve a course
+            String sqlGetCourse = "";
+            ResultSet rs = stmt.executeQuery(sqlGetCourse);
+            boolean exists = rs.next();
+            rs.close();
+            stmt.close();
+            return exists;
+	} catch (SQLException e) {
+            System.out.println("There was a problem accessing the database");
+            return false;
+	} finally {
+            //finally block used to close resources
+            try {
+		if (stmt != null) {
+                    stmt.close();
+		}
+            } catch (SQLException se2){
+                
+            }
+	}
+    }
     
 }//ends attempt2
