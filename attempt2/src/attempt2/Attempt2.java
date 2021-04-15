@@ -210,12 +210,12 @@ public class Attempt2 {
     */
     public static void outlierReport(Connection c)
     {
-        String sql = "SELECT departmentName,courseNumber, sectionNumber, teamName, \"numStudents\" FROM(SELECT te.departmentName, te.courseNumber, te.sectionNumber, te.teamName, COUNT(studentID) AS \"numStudents\", \"average\" FROM Team te INNER JOIN (SELECT departmentName, courseNumber, sectionNumber, AVG(CAST(\"numStudents\" AS DECIMAL(3,2))) AS \"average\" FROM (SELECT departmentName, courseNumber, sectionNumber, teamName, COUNT(studentID) AS \"numStudents\" FROM Team t GROUP BY departmentName, courseNumber, sectionNumber, teamName)a GROUP BY departmentName, courseNumber, sectionNumber)j ON te.DEPARTMENTNAME = j.DEPARTMENTNAME AND te.COURSENUMBER = j.COURSENUMBER AND te.SECTIONNUMBER = j.SECTIONNUMBER GROUP BY te.departmentName, te.courseNumber, te.sectionNumber, teamName,\"average\")a WHERE \"numStudents\" > ( 2+ \"average\") AND \"numStudents\" < ( 2- \"average\")";
+        String sql = "SELECT departmentName,courseNumber, sectionNumber, teamName, \"numStudents\" FROM(SELECT te.departmentName, te.courseNumber, te.sectionNumber, te.teamName, COUNT(studentID) AS \"numStudents\", \"average\" FROM Team te INNER JOIN (SELECT departmentName, courseNumber, sectionNumber, AVG(CAST(\"numStudents\" AS DECIMAL(3,2))) AS \"average\" FROM (SELECT departmentName, courseNumber, sectionNumber, teamName, COUNT(studentID) AS \"numStudents\" FROM Team t GROUP BY departmentName, courseNumber, sectionNumber, teamName)a GROUP BY departmentName, courseNumber, sectionNumber)j ON te.DEPARTMENTNAME = j.DEPARTMENTNAME AND te.COURSENUMBER = j.COURSENUMBER AND te.SECTIONNUMBER = j.SECTIONNUMBER GROUP BY te.departmentName, te.courseNumber, te.sectionNumber, teamName,\"average\")a WHERE \"numStudents\" > ( 2+ \"average\") OR \"numStudents\" < ( \"average\"-2)";
         try(
         PreparedStatement stmt = c.prepareStatement(sql);
         ResultSet rs = stmt.executeQuery();)//try with resources automatically cleans/closes out resources
         {
-            String format ="%-50s%-30s%-30s%-30s\n";
+            String format ="%-30s%-25s%-25s%-30s%-15s\n";
             System.out.printf(format,"Department Name", "Course Number", "Section Number", "Team Name","Number of Students");
             while (rs.next()) {
                 String depName = rs.getString("departmentName");
