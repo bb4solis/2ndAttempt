@@ -231,11 +231,19 @@ public class Attempt2 {
             ex.printStackTrace();
         }
     }
-	
-  public static void sectionStats(Connection c)
+
+    /**
+     * Report the average value that the student received from their peers for each rating dimension within a given course section.  
+     * Order by department, course number, student last name, student first name, and dimension text.
+     * @param c 
+     */
+    public static void sectionStats(Connection c)
     {
 
-        String sql = "SELECT firstName, lastName, s.departmentName, s.courseNumber, s.sectionNumber, CAST(AVG(rating) AS DECIMAL(10,2)) AS "+"avgRating"+", SURVEYQUESTION FROM Score s INNER JOIN Student st ON s.EVALUATEEID = st.STUDENTID INNER JOIN Survey su ON s.SURVEYID = su.SURVEYID GROUP BY firstName, lastName, s.departmentName, s.courseNumber, s.sectionNumber,SURVEYQUESTION ORDER BY s.departmentName, s.courseNumber, firstName, lastName, SURVEYQUESTION";
+        String sql = "SELECT firstName, lastName, s.departmentName, s.courseNumber, s.sectionNumber, AVG(CAST(rating AS DECIMAL(10,2))) AS \"avgRating\", SURVEYQUESTION FROM Score s INNER JOIN Student st ON s.EVALUATEEID = st.STUDENTID INNER JOIN Survey su ON s.SURVEYID = su.SURVEYID GROUP BY firstName, lastName, s.departmentName, s.courseNumber, s.sectionNumber,SURVEYQUESTION ORDER BY s.departmentName, s.courseNumber, firstName, lastName, SURVEYQUESTION";
+
+	
+  
         try(
         PreparedStatement stmt = c.prepareStatement(sql);
         ResultSet rs = stmt.executeQuery();)//try with resources automatically cleans/closes out resources
@@ -243,13 +251,13 @@ public class Attempt2 {
             String format ="%-25s%-25s%-25s%-25s%-15s%-15s%-200s\n";
             System.out.printf(format,"First Name","Last Name","Department Name", "Course Number", "Section Number", "Average Rating","Survey Prompt");
             while (rs.next()) {
-
                 String fName = rs.getString("firstName");
                 String lName = rs.getString("lastName");
                 String depName = rs.getString("departmentName");
                 int courseNum = rs.getInt("courseNumber");
-                int secNum = rs.getInt("sectionNumber");
-                int avgRate = rs.getInt("avgRating");
+
+                int secNum = rs.getInt("sectionNumber");                
+                double avgRate = rs.getDouble("avgRating");
                 String survQs = rs.getString("surveyQuestion");
 
                 System.out.printf(format, fName, lName, depName, courseNum, secNum, avgRate, survQs);
@@ -257,7 +265,8 @@ public class Attempt2 {
         } catch (SQLException ex) {
             System.out.println("Error getting section ratings");
             ex.printStackTrace();
-        }
+
+        }    
     }
     /**
      * For each team, list the department name, the course name, the course units, the section number, the team name,
@@ -291,7 +300,8 @@ public class Attempt2 {
    public static void teamDemographics(Connection c)
     {
 
-        String sql = "SELECT departmentName, courseNumber, sectionNumber, teamName, COUNT(studentID) AS 'numStudents' FROM Team GROUP BY departmentName, courseNumber, sectionNumber, teamName";
+    
+        String sql = "SELECT departmentName, courseNumber, sectionNumber, teamName, COUNT(studentID) AS \"numStudents\" FROM Team GROUP BY departmentName, courseNumber, sectionNumber, teamName";
         try(
         PreparedStatement stmt = c.prepareStatement(sql);
         ResultSet rs = stmt.executeQuery();)//try with resources automatically cleans/closes out resources
@@ -309,7 +319,8 @@ public class Attempt2 {
         } catch (SQLException ex) {
             System.out.println("Error getting t");
             ex.printStackTrace();
-        }
+        }     
+
     }
 	
     /**
