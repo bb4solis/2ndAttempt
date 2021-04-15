@@ -92,19 +92,19 @@ public class Attempt2 {
                             break;
                         case 3://Outlier Report
                             System.out.println("Outlier Report\n");
-				OutlierReport(conn);
+				outlierReport(conn);
                             break;
                         case 4://Section Stats
                             System.out.println("Section Stats\n");
-				SectionStats(conn);
+				sectionStats(conn);
                             break;
                         case 5://Team Roster
                             System.out.println("Team Roster\n");
-				TeamRoster(conn);
+				teamRoster(conn);
                             break;
                         case 6://Team Demographics
                             System.out.println("Team Demographics\n");
-				TeamDemographics(conn);
+				teamDemographics(conn);
                             break;
                         case 7://End
                             System.out.println("Exiting program\n");
@@ -203,52 +203,61 @@ public class Attempt2 {
             ex.printStackTrace();
         }
     }
-	
-public static void OutlierReport(Connection c)
-{
-    //NOT FINISHED YET!
-    /**/
-    String sql = "SELECT TeamName FROM Team";
+
+    /**
+     * Produce a report that shows all the teams whose number of students is > 2 higher or lower than the average number of students in the teams within that particular section
+     * @param c 
+    */
+    public static void outlierReport(Connection c)
+    {
+        String sql = "SELECT departmentName,courseNumber, sectionNumber, teamName, \"numStudents\" FROM(SELECT te.departmentName, te.courseNumber, te.sectionNumber, te.teamName, COUNT(studentID) AS \"numStudents\", \"average\" FROM Team te INNER JOIN (SELECT departmentName, courseNumber, sectionNumber, AVG(CAST(\"numStudents\" AS DECIMAL(3,2))) AS \"average\" FROM (SELECT departmentName, courseNumber, sectionNumber, teamName, COUNT(studentID) AS \"numStudents\" FROM Team t GROUP BY departmentName, courseNumber, sectionNumber, teamName)a GROUP BY departmentName, courseNumber, sectionNumber)j ON te.DEPARTMENTNAME = j.DEPARTMENTNAME AND te.COURSENUMBER = j.COURSENUMBER AND te.SECTIONNUMBER = j.SECTIONNUMBER GROUP BY te.departmentName, te.courseNumber, te.sectionNumber, teamName,\"average\")a WHERE \"numStudents\" > ( 2+ \"average\") AND \"numStudents\" < ( 2- \"average\")";
         try(
         PreparedStatement stmt = c.prepareStatement(sql);
         ResultSet rs = stmt.executeQuery();)//try with resources automatically cleans/closes out resources
         {
-            System.out.println("Teams");
+            String format ="%-50s%-30s%-30s%-30s\n";
+            System.out.printf(format,"Department Name", "Course Number", "Section Number", "Team Name","Number of Students");
             while (rs.next()) {
-                System.out.println(rs.getString("TeamName"));
+                String depName = rs.getString("departmentName");
+                int courseNum = rs.getInt("courseNumber");
+                int secNum = rs.getInt("sectionNumber");
+                String tName = rs.getString("teamName");
+                int numStud = rs.getInt("numStudents");
+                
+                System.out.printf(format, depName, courseNum, secNum, tName, numStud);
             }
         } catch (SQLException ex) {
-            System.out.println("Error getting teams");
+            System.out.println("Error getting outliers");
             ex.printStackTrace();
         }
-}
+    }
 	
-public static void SectionStats(Connection c)
-{
-    //NOT FINISHED YET!
-    /**/
-    String sql = "SELECT TeamName FROM Team";
-        try(
-        PreparedStatement stmt = c.prepareStatement(sql);
-        ResultSet rs = stmt.executeQuery();)//try with resources automatically cleans/closes out resources
-        {
-            System.out.println("Teams");
-            while (rs.next()) {
-                System.out.println(rs.getString("TeamName"));
+    public static void sectionStats(Connection c)
+    {
+        //NOT FINISHED YET!
+        /**/
+        String sql = "SELECT TeamName FROM Team";
+            try(
+            PreparedStatement stmt = c.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();)//try with resources automatically cleans/closes out resources
+            {
+                System.out.println("Teams");
+                while (rs.next()) {
+                    System.out.println(rs.getString("TeamName"));
+                }
+            } catch (SQLException ex) {
+                System.out.println("Error getting teams");
+                ex.printStackTrace();
             }
-        } catch (SQLException ex) {
-            System.out.println("Error getting teams");
-            ex.printStackTrace();
-        }
-}
+    }
 	
-public static void TeamRoster(Connection c)
-{
+    public static void teamRoster(Connection c)
+    {
     //NOT FINISHED YET!
     /**/
-    String sql = "SELECT TeamName FROM Team";
-        try(
-        PreparedStatement stmt = c.prepareStatement(sql);
+        String sql = "SELECT TeamName FROM Team";
+            try(
+            PreparedStatement stmt = c.prepareStatement(sql);
         ResultSet rs = stmt.executeQuery();)//try with resources automatically cleans/closes out resources
         {
             System.out.println("Teams");
@@ -261,7 +270,7 @@ public static void TeamRoster(Connection c)
         }
 }
 
-public static void TeamDemographics(Connection c)
+public static void teamDemographics(Connection c)
 {
     //NOT FINISHED YET!
     /**/
