@@ -238,7 +238,7 @@ public class Attempt2 {
      */
     public static void sectionStats(Connection c)
     {
-      
+
         String sql = "SELECT firstName, lastName, s.departmentName, s.courseNumber, s.sectionNumber, CAST(AVG(rating) AS DECIMAL(10,2)) AS \"avgRating\", SURVEYQUESTION FROM Score s INNER JOIN Student st ON s.EVALUATEEID = st.STUDENTID INNER JOIN Survey su ON s.SURVEYID = su.SURVEYID GROUP BY firstName, lastName, s.departmentName, s.courseNumber, s.sectionNumber,SURVEYQUESTION ORDER BY s.departmentName, s.courseNumber, firstName, lastName, SURVEYQUESTION";
         try(
         PreparedStatement stmt = c.prepareStatement(sql);
@@ -294,21 +294,26 @@ public class Attempt2 {
 
     public static void teamDemographics(Connection c)
     {
-    //NOT FINISHED YET!
-    /**/
-        String sql = "SELECT TeamName FROM Team";
-            try(
-            PreparedStatement stmt = c.prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery();)//try with resources automatically cleans/closes out resources
-            {
-                System.out.println("Teams");
-                while (rs.next()) {
-                    System.out.println(rs.getString("TeamName"));
-                }
-            } catch (SQLException ex) {
-                System.out.println("Error getting teams");
-                ex.printStackTrace();
+    
+        String sql = "SELECT departmentName, courseNumber, sectionNumber, teamName, COUNT(studentID) AS \"numStudents\" FROM Team GROUP BY departmentName, courseNumber, sectionNumber, teamName";
+        try(
+        PreparedStatement stmt = c.prepareStatement(sql);
+        ResultSet rs = stmt.executeQuery();)//try with resources automatically cleans/closes out resources
+        {
+            String format ="%-30s%-25s%-25s%-30s%-30s\n";
+            System.out.printf(format,"Department Name", "Course Number", "Section Number","Team Name", "Number of Students");
+            while (rs.next()) {
+                String depName = rs.getString("departmentName");
+                int courseNum = rs.getInt("courseNumber");
+                int secNum = rs.getInt("sectionNumber");
+                String tName = rs.getString("teamName");
+                int numStud = rs.getInt("numStudents");
+                System.out.printf(format, depName, courseNum, secNum, tName, numStud);
             }
+        } catch (SQLException ex) {
+            System.out.println("Error getting t");
+            ex.printStackTrace();
+        }     
     }
 	
     /**
