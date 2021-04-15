@@ -239,7 +239,7 @@ public class Attempt2 {
     public static void sectionStats(Connection c)
     {
 
-        String sql = "SELECT firstName, lastName, s.departmentName, s.courseNumber, s.sectionNumber, CAST(AVG(rating) AS DECIMAL(10,2)) AS \"avgRating\", SURVEYQUESTION FROM Score s INNER JOIN Student st ON s.EVALUATEEID = st.STUDENTID INNER JOIN Survey su ON s.SURVEYID = su.SURVEYID GROUP BY firstName, lastName, s.departmentName, s.courseNumber, s.sectionNumber,SURVEYQUESTION ORDER BY s.departmentName, s.courseNumber, firstName, lastName, SURVEYQUESTION";
+        String sql = "SELECT firstName, lastName, s.departmentName, s.courseNumber, s.sectionNumber, AVG(CAST(rating AS DECIMAL(10,2))) AS \"avgRating\", SURVEYQUESTION FROM Score s INNER JOIN Student st ON s.EVALUATEEID = st.STUDENTID INNER JOIN Survey su ON s.SURVEYID = su.SURVEYID GROUP BY firstName, lastName, s.departmentName, s.courseNumber, s.sectionNumber,SURVEYQUESTION ORDER BY s.departmentName, s.courseNumber, firstName, lastName, SURVEYQUESTION";
         try(
         PreparedStatement stmt = c.prepareStatement(sql);
         ResultSet rs = stmt.executeQuery();)//try with resources automatically cleans/closes out resources
@@ -253,7 +253,7 @@ public class Attempt2 {
                 String depName = rs.getString("departmentName");
                 int courseNum = rs.getInt("courseNumber");
                 int secNum = rs.getInt("sectionNumber");                
-                int avgRate = rs.getInt("avgRating");
+                double avgRate = rs.getDouble("avgRating");
                 String survQs = rs.getString("surveyQuestion");
                 
                 System.out.printf(format, fName, lName, depName, courseNum, secNum, avgRate, survQs);
