@@ -183,25 +183,23 @@ public class Attempt2 {
      */
     public static void averageScore(Connection c)
     {
-        String sql = "";
+        String sql = "SELECT evaluateeID, firstName, lastName, \"AvgScore\" FROM Team t INNER JOIN Student s ON t.STUDENTID = s.STUDENTID INNER JOIN (SELECT evaluateeID, AVG(rating) AS \"AvgScore\" FROM Score sc WHERE evaluatorID != evaluateeID GROUP BY evaluateeID)scr ON s.STUDENTID = evaluateeID";
         try(
         PreparedStatement stmt = c.prepareStatement(sql);
         ResultSet rs = stmt.executeQuery();)//try with resources automatically cleans/closes out resources
         {
-            String format ="%-50s%-30s%-30s%-30s%-15s%-15s\n";
-            System.out.printf(format,"Team Name", "First Name", "Last Name", "Department Name", "Course Number", "Section Number");
+            String format ="%-50s%-30s%-30s%-30s\n";
+            System.out.printf(format,"Student ID", "First Name", "Last Name", "Average Survey Score");
             while (rs.next()) {
-                String tname = rs.getString("teamName");
+                int stdID = rs.getInt("evaluateeID");
                 String fname = rs.getString("firstName");
                 String lname = rs.getString("lastName");
-                String depName = rs.getString("departmentName");
-                int courseNum = rs.getInt("courseNumber");
-                int secNum = rs.getInt("sectionNumber");
+                double avgScore = rs.getDouble("AvgScore");
                 
-                System.out.printf(format, tname, fname, lname, depName, courseNum, secNum);
+                System.out.printf(format, stdID, fname, lname, avgScore);
             }
         } catch (SQLException ex) {
-            System.out.println("Error getting teams");
+            System.out.println("Error getting scores");
             ex.printStackTrace();
         }
     }
