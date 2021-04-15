@@ -232,23 +232,32 @@ public class Attempt2 {
         }
     }
 	
-    public static void sectionStats(Connection c)
+  public static void sectionStats(Connection c)
     {
-        //NOT FINISHED YET!
-        /**/
-        String sql = "SELECT TeamName FROM Team";
-            try(
-            PreparedStatement stmt = c.prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery();)//try with resources automatically cleans/closes out resources
-            {
-                System.out.println("Teams");
-                while (rs.next()) {
-                    System.out.println(rs.getString("TeamName"));
-                }
-            } catch (SQLException ex) {
-                System.out.println("Error getting teams");
-                ex.printStackTrace();
+
+        String sql = "SELECT firstName, lastName, s.departmentName, s.courseNumber, s.sectionNumber, CAST(AVG(rating) AS DECIMAL(10,2)) AS "avgRating", SURVEYQUESTION FROM Score s INNER JOIN Student st ON s.EVALUATEEID = st.STUDENTID INNER JOIN Survey su ON s.SURVEYID = su.SURVEYID GROUP BY firstName, lastName, s.departmentName, s.courseNumber, s.sectionNumber,SURVEYQUESTION ORDER BY s.departmentName, s.courseNumber, firstName, lastName, SURVEYQUESTION";
+        try(
+        PreparedStatement stmt = c.prepareStatement(sql);
+        ResultSet rs = stmt.executeQuery();)//try with resources automatically cleans/closes out resources
+        {
+            String format ="%-25s%-25s%-25s%-25s%-15s%-15s%-200s\n";
+            System.out.printf(format,"First Name","Last Name","Department Name", "Course Number", "Section Number", "Average Rating","Survey Prompt");
+            while (rs.next()) {
+
+                String fName = rs.getString("firstName");
+                String lName = rs.getString("lastName");
+                String depName = rs.getString("departmentName");
+                int courseNum = rs.getInt("courseNumber");
+                int secNum = rs.getInt("sectionNumber");
+                int avgRate = rs.getInt("avgRating");
+                String survQs = rs.getString("surveyQuestion");
+
+                System.out.printf(format, fName, lName, depName, courseNum, secNum, avgRate, survQs);
             }
+        } catch (SQLException ex) {
+            System.out.println("Error getting section ratings");
+            ex.printStackTrace();
+        }
     }
     /**
      * For each team, list the department name, the course name, the course units, the section number, the team name,
